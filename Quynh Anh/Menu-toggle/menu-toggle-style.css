@@ -1,0 +1,138 @@
+		html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1.5;
+}
+p{
+	font-size: 13px;
+	line-height: 2;
+	
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+body{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 13px;
+}
+body *{
+	color: #6C7480;
+}
+ body .container h2{
+	color: #414A5A;
+	font-size: 26px;
+}
+a:hover{
+	text-decoration: none !important;
+}
+
+.violet-text{
+		color: #C7B7E6 !important;
+}
+.violet-text:hover{
+	color: #554d63 !important;
+	cursor: pointer;
+}		
+
+/* HEADER */
+	/*header-logo*/
+	.header-logo{
+		font-size: 50px;
+		color: #44c0c2;
+		font-family: 'Lobster', cursive;
+		padding: 2%;
+	}
+	/*header-menu*/
+	.header-menu ul{
+		display: inline-block;
+		list-style-type: none;
+		width: 90%;
+		height: 100%;
+		float: left;
+	}
+	.header-menu ul li, .header-menu .toggle i{
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+	}
+	.header-menu ul li{
+		width: 16%;	
+		float: left;
+	}
+	.header-menu ul li a{
+		color: #484C55;
+		text-decoration: none;
+		font-size: 15px;
+	}
+	.header-menu ul li:hover, .header-menu ul li:focus{
+		color: #44c0c2;
+		border-bottom: 3px solid #44c0c2;
+		background-color: #F8F9FB;
+	}
+	.header-menu ul li:hover a, .header-menu ul li:focus a{
+		color: #44c0c2;
+	}	
+	.header-menu .toggle{
+		float: right;
+		width: 10%;
+		height: 100%;
+	}
+	/* Banner */
+	.banner{
+		background-image: url("images/blog-banner.png");
+		height: 174px;
+		width: auto;
+		margin-bottom: 6rem;
+		background-size: cover;}
+	.banner p{
+		color: #FFF;
+		text-align: center;
+		font-size: 42px;
+		padding: 40px 0px;
+		font-weight: 600;}
+
+	/* Toggle */
+	.menu-show{
+		visibility: visible;
+	}
+	.menu-hide{
+		visibility: hidden;
+	}
+	
