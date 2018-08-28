@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!-- Font Awesome CSS-->
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <!-- Google fonts - Open Sans-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:500" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+	<link rel="stylesheet" href="ajax-login-check-style.css">
+	<style>
+	
+	</style>
+  </head>
+  <body>
+  
+	<div class="container">
+		
+		<form class="form-group" action="#" name="form" method="post">
+			<h2>Leave a comment</h2>
+			<div class="row">
+				<div class="col-md-6">
+					<label for="name"></label>
+					<input type="text" class="form-control" id="username" placeholder="Username*:" >
+					<div class="message message-name">
+						<p id="username-check" class="invalid"> Username can't be empty</p>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<label for="psw"></label>
+					<input type="password" class="form-control" id="psw" placeholder="Password*:">
+					<div class="message message-psw">
+					  <h3>Password must contain:</h3>
+					  <p id="letter" class="invalid">At least 1 lowercase alphabetical character</p>
+					  <p id="capital" class="invalid">At least 1 uppercase alphabetical character</p>
+					  <p id="number" class="invalid">At least 1 numeric character</p>
+					  <p id="special" class="invalid">At least 1 special character</p>
+					  <p id="length" class="invalid">At least 6 characters but maximum is 16 characters</p>
+					</div>
+				</div>
+			</div> 
+			<label for="comment"></label>
+			<textarea class="form-control" rows="6" id="comment" class="md-textarea">Your Comment</textarea>
+		</form>
+		<div class="notify row clearfix">
+			<div class="notify-check col-md-9">
+				<img src="../images/retangle.png">
+				<span>notify me of follow up comment via e-mail</span>
+			</div>
+			<div class="btn-send col-md-3">
+				<button class="btn btn-info" role="button" type="submit">Send</button>
+			</div>
+		</div>
+		<div class="alert" role="alert">
+		</div>
+	</div>
+	<script>
+		
+		var username = document.getElementById("username");
+		console.log(username);
+		var psw = document.getElementById("psw");
+		console.log(psw);
+		var letter = document.getElementById("letter");
+		var capital = document.getElementById("capital");
+		var number = document.getElementById("number");
+		var special = document.getElementById("special");
+		var length = document.getElementById("length");
+
+		
+		function checkname() {
+			if (username.value === null || username.value === ""){
+				document.querySelector(".message-name").style.display = "block";
+			}
+			else{
+				document.querySelector(".message-name").style.display = "none";
+			}
+		}
+		username.onfocus = checkname;
+		username.onkeyup = checkname;
+		
+		psw.onfocus = function() {
+		  document.querySelector(".message-psw").style.display = "block";
+		}
+		psw.onkeyup = function() {
+			function matching(compare, value){
+				if(psw.value.match(compare)) { 
+					value.classList.remove("invalid");
+					value.classList.add("valid");
+				  } else {
+					value.classList.remove("valid");
+					value.classList.add("invalid");
+				  }
+				
+			}
+			
+			var lowerCaseLetters = /[a-z]/g;
+			matching(lowerCaseLetters, letter);
+			var upperCaseLetters = /[A-Z]/g;
+			matching(upperCaseLetters, capital);
+			var numbers = /[0-9]/g;
+			matching(numbers, number);
+			var specials = /[!@#\$%\^&]/g;
+			matching(specials, special);
+				
+			if(psw.value.length >= 6 && psw.value.length <= 16) {
+				length.classList.remove("invalid");
+				length.classList.add("valid");
+			}
+			else {
+				length.classList.remove("valid");
+				length.classList.add("invalid");
+			  }
+		}
+		
+	</script>
+  </body>
+</html>
