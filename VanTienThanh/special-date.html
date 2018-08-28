@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Format a specific date</title>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4 mt-5">
+            <input type="text" name="date" id="date" class="form-control" placeholder="YYYY-MM-DD">
+            <button class="btn btn-primary mt-2 px-5" id="submit">Submit</button>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-12 mt-4">
+            <h3 id="show" class="text-center"></h3>
+        </div>
+    </div>
+</div>
+<script>
+    var regex = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
+    document.getElementById('date').addEventListener("focusout", function () {
+        var date = document.getElementById('date').value;
+        if (!regex.test(date)) {
+            document.getElementById('date').classList.add('input--style-fail');
+        } else {
+            document.getElementById('date').classList.remove('input--style-fail');
+        }
+    });
+    document.getElementById('submit').onclick = function () {
+        var str = document.getElementById('date').value;
+        var d = new Date(str);
+        var year = d.getFullYear();
+        var month = d.getMonth();
+        var date = d.getDate();
+        var weekday = new Array(7);
+        weekday[0] = "Chủ nhật";
+        weekday[1] = "Thứ hai";
+        weekday[2] = "Thứ ba";
+        weekday[3] = "Thứ tư";
+        weekday[4] = "Thứ năm";
+        weekday[5] = "Thứ sáu";
+        weekday[6] = "Thứ bảy";
+        var day = weekday[d.getDay()];
+        document.getElementById('show').innerHTML = day + " ngày " + date + " tháng " + month + " năm " + year;
+    }
+</script>
+</body>
+</html>

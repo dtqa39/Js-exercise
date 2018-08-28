@@ -1,0 +1,13 @@
+.user-list__delayimg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+
+.input--style-fail {
+    border: 1px solid red;
+}
+
+.tbl--word-wrap td {
+    word-wrap: break-word;
+}

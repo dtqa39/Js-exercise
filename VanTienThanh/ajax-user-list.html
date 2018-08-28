@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>user list</title>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-4" id="message">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" id="pangigation-1" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" id="pangigation-2" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" id="pangigation-3" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" id="pangigation-4" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link" id="pangigation-5" href="#">5</a></li>
+                    <li class="page-item"><a class="page-link" id="pangigation-6" href="#">6</a></li>
+                    <li class="page-item"><a class="page-link" id="pangigation-7" href="#">7</a></li>
+                    <li class="page-item"><a class="page-link" id="pangigation-8" href="#">8</a></li>
+                    <li class="page-item"><a class="page-link" id="pangigation-9" href="#">9</a></li>
+                    <li class="page-item"><a class="page-link" id="pangigation-10" href="#">10</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="col-md-12">
+                <img src="images/ajax-loader.gif" alt="" id="delay__img" class="user-list__delayimg
+					">
+                <table class="table table-hover text-center tbl--word-wrap">
+                    <thead>
+                    <tr>
+                        <th scope="col">stt</th>
+                        <th scope="col">id</th>
+                        <th scope="col">first name</th>
+                        <th scope="col">last name</th>
+                        <th scope="col">display name</th>
+                        <th scope="col">username</th>
+                        <th scope="col">email</th>
+                        <th scope="col">email alt</th>
+                        <th scope="col">is chairman</th>
+                        <th scope="col">is admin</th>
+                        <th scope="col">status</th>
+                        <th scope="col">order</th>
+                        <th scope="col">password</th>
+                        <th scope="col">language use in email</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbl__data-row">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //ajax ket noi va nhan du lieu
+    var request = new XMLHttpRequest();
+    var arr;
+    request.onreadystatechange = function () {
+        if (request.readyState === 4 && request.status === 200) {
+            arr = JSON.parse(this.responseText);
+            setTimeout(function () {
+                for (var j = 0; j < 10; j++) {
+                    t = strData(j);
+                    document.getElementById('tbl__data-row').innerHTML += t;
+                }
+                document.getElementById("delay__img").classList.add('d-none');
+            }, 3000);
+        }
+    }
+    window.onload = function (e) {
+        //gui ajax lay du lieu
+        request.open('Get', 'https://training.gemvietnam.com/dummy-api/users.json');
+        request.send();
+    }
+    for (var i = 1; i <= 10; i++) {
+        document.getElementById('pangigation-' + i).onclick = function () {
+            var x = document.getElementById(this.id).innerHTML;
+            if (x == 1) {
+                document.getElementById('tbl__data-row').innerHTML = "";
+                document.getElementById("delay__img").classList.remove('d-none');
+                setTimeout(function () {
+                    for (var j = 0; j < 10; j++) {
+                        t = strData(j);
+                        document.getElementById('tbl__data-row').innerHTML += t;
+                    }
+                    document.getElementById("delay__img").classList.add('d-none');
+                }, 300);
+            } else {
+                document.getElementById('tbl__data-row').innerHTML = "";
+                document.getElementById("delay__img").classList.remove('d-none');
+                setTimeout(function () {
+                    for (var j = x * 10 - 10; j < x * 10; j++) {
+                        t = strData(j);
+                        document.getElementById('tbl__data-row').innerHTML += t;
+                    }
+                    document.getElementById("delay__img").classList.add('d-none');
+                }, 300);
+            }
+        }
+    }
+
+    function strData(j) {
+        var t;
+        t = "<td>" + (j + 1) + "</td>";
+        t += "<td>" + arr[j].id + "</td>";
+        t += "<td>" + arr[j].first_name + "</td>";
+        t += "<td>" + arr[j].last_name + "</td>";
+        t += "<td>" + arr[j].display_name + "</td>";
+        t += "<td>" + arr[j].username + "</td>";
+        t += "<td>" + arr[j].email + "</td>";
+        t += "<td>" + arr[j].email_alt + "</td>";
+        t += "<td>" + arr[j].is_chairman + "</td>";
+        t += "<td>" + arr[j].is_admin + "</td>";
+        t += "<td>" + arr[j].status + "</td>";
+        t += "<td>" + arr[j].order + "</td>";
+        t += "<td>" + arr[j].password + "</td>";
+        t += "<td>" + arr[j].language_use_in_email + "</td>";
+        return t;
+    }
+</script>
+</body>
+</html>
