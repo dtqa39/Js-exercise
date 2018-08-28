@@ -116,7 +116,7 @@ a:hover{
 	}
 	/* Banner */
 	.banner{
-		background-image: url("images/blog-banner.png");
+		background-image: url("../images/blog-banner.png");
 		height: 174px;
 		width: auto;
 		margin-bottom: 6rem;
