@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geolocation</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="bootstrap4/css/bootstrap.min.css">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        .gr-btn {
+            height: 10%;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #list_address {
+            max-height: 600px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid h-100">
+    <div class="row justify-content-center py-4 h-15">
+        <div class="col-md-4">
+            <div class="input-group mb-3">
+                <select class="custom-select" id="kilometers">
+                    <option value="1" selected>1KM</option>
+                    <option value="3">3KM</option>
+                    <option value="5">5KM</option>
+                    <option value="8">8KM</option>
+                    <option value="10">10KM</option>
+                </select>
+                <div class="input-group-append">
+                    <button class="btn ml-1" id="search">Search</button>
+                    <button class="btn ml-1" id="btnnext">Add point</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row h-75">
+        <div class="col-md-2">
+            <div class="list-group text-center" id="list_address">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div id="map" class="d-flex justify-content-center"></div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-light mb-3 text-center d-none" id="place__info">
+                <div class="card-header" id="header"></div>
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text" id="info__address"></p>
+                    <p class="card-text"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let markersArray=[];
+    function clearOverlays(){
+        for (var i = 0; i <markersArray.length; i++) {
+            markersArray[i].setMap(null);
+        }
+    }
+    let pos;
+    function loadMap(r) {
+        // Create the map.
+        var pyrmont = {lat: 21.0333, lng: 105.85};
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: pyrmont,
+            zoom: 15
+        });
+        infoWindow = new google.maps.InfoWindow;
+
+        //set location and add marker user
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                 pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                infoWindow.open(map);
+                map.setCenter(pos);
+                // Create markers.
+                var marker = new google.maps.Marker({
+                    position: pos,
+                    map: map
+                });
+                // Create the places service.
+                var service = new google.maps.places.PlacesService(map);
+                var getNextPage = null;
+                var moreButton = document.getElementById('btnnext');
+                moreButton.onclick = function () {
+                    moreButton.disabled = true;
+                    if (getNextPage) getNextPage();
+                };
+                // Perform a nearby search.
+                service.nearbySearch(
+                    {location: pos, radius: r, type: ['restaurant']},
+                    function (results, status, pagination) {
+                        if (status !== 'OK') return;
+                        for (var i = 0; i < results.length; i++) {
+                            createMarkers(results[i]);
+                        }
+                        moreButton.disabled = !pagination.hasNextPage;
+                        getNextPage = pagination.hasNextPage && function () {
+                            pagination.nextPage();
+                        };
+                    });
+            }, function () {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+    }
+
+    let map, infoWindow;
+
+    function initMap() {
+        loadMap(1000);
+    }
+
+    function createMarkers(place) {
+        var image = {
+            url: "images/flag.png",
+            size: new google.maps.Size(71, 71),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(17, 34),
+            scaledSize: new google.maps.Size(30, 30),
+            labelOrigin: new google.maps.Point(15, 10)
+        };
+        var marker = new google.maps.Marker({
+            map: map,
+            icon: image,
+            title: place.name,
+            position: place.geometry.location
+        });
+        //add to list items
+        document.getElementById('list_address').innerHTML += '<a href="#" class="list-group-item list-group-item-action" ">' + place.name + '</a>';
+        //event click to flag
+        google.maps.event.addListener(marker, 'click', function () {
+            document.getElementById('place__info').classList.remove('d-none');
+            document.getElementById("header").innerHTML = place.name;
+            document.getElementById("info__address").innerHTML = 'Địa chỉ: ' + place.vicinity;
+        });
+        // end of event
+        markersArray.push(marker);
+    }
+
+    document.getElementById('search').onclick = function () {
+        r = document.getElementById('kilometers').value * 1000;
+        document.getElementById('list_address').innerHTML = "";
+        // loadMap(document.getElementById('kilometers').value * 1000);
+        clearOverlays();
+        var service = new google.maps.places.PlacesService(map);
+        var getNextPage = null;
+        var moreButton = document.getElementById('btnnext');
+        moreButton.onclick = function () {
+            moreButton.disabled = true;
+            if (getNextPage) getNextPage();
+        };
+        // Perform a nearby search.
+        service.nearbySearch(
+            {location: pos, radius: r, type: ['restaurant']},
+            function (results, status, pagination) {
+                if (status !== 'OK') return;
+                for (var i = 0; i < results.length; i++) {
+                    createMarkers(results[i]);
+                }
+                moreButton.disabled = !pagination.hasNextPage;
+                getNextPage = pagination.hasNextPage && function () {
+                    pagination.nextPage();
+                };
+            });
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9cdufBUYyJSNH4LThENamjkUmAKy0bIU&libraries=places&callback=initMap"
+        async defer></script>
+</body>
+</html>

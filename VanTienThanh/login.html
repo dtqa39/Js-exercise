@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="bootstrap4/css/bootstrap.min.css">
+    <title>Login</title>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-4" id="message">
+            <form>
+                <div class="form-group">
+                    <label for="Email">Email address</label>
+                    <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                           placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Password">
+                    <small id="pass-status" class="form-text text-danger"></small>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                </div>
+            </form>
+            <button class="btn btn-primary" id="submit">Submit</button>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="modal" tabindex="-1" role="dialog" id="modal_display">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Login Successfully</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="login-success__name">Hello</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                    onclick="location.reload()">Logout
+                            </button>
+                            <button type="button" class="btn btn-primary">Profile</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="demo"></div>
+<script>
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (request.readyState === 4 && request.status === 200) {
+            var idcheck = 0;
+            var passwordcheck = 0;
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var arr = JSON.parse(this.responseText);
+            var login;
+            //password rule
+            var regex = new RegExp("^(?=.*[A-Z])(?=.*[0-9])(?=.{6,})");
+            if (regex.test(password)) {
+                passwordcheck = 2;
+            } else {
+                // document.getElementById('pass-status').style.display = "block";
+                document.getElementById('pass-status').innerHTML = "Mật khẩu phải có chữ hoa, chữ thường, số và ký tự";
+                return false;
+            }
+            for (var i = 0; i < arr.length; i++) {
+                //check id and password
+                if (email.localeCompare(arr[i].email) == 0 && password.localeCompare(arr[i].password) == 0 && passwordcheck == 2) {
+                    idcheck = 1;
+                    passwordcheck = 1;
+                    login = arr[i];
+                }
+            }
+            if (idcheck == 1 && passwordcheck == 1) {
+                document.getElementById('modal_display').classList.add('d-block');
+                document.getElementById('message').classList.add('d-none');
+                document.getElementById('login-success__name').innerHTML += login.display_name;
+            } else {
+                document.getElementById('pass-status').innerHTML = "Tài khoản hoặc mật khẩu không đúng";
+            }
+        }
+    }
+    document.getElementById('submit').onclick = function () {
+        request.open('Get', 'https://training.gemvietnam.com/dummy-api/users.json');
+        request.send();
+    }
+</script>
+</body>
+</html>
