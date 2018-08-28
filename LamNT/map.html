@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Map restaurants</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 90%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="input-group mb-3 col-md-3 offset-md-4 mt-2">
+      <select class="custom-select" id="select-distance" aria-label="Example select with button addon">
+        <option checked value="1">1 kilometers</option>
+        <option value="3">3 kilometers</option>
+        <option value="5">5 kilometers</option>
+        <option value="8">8 kilometers</option>
+        <option value="10 ">10 kilometers</option>
+      </select>
+      <div class="input-group-prepend ml-2">
+        <button class="btn btn-outline-secondary" type="button" id="btn-distance">Search</button>
+      </div>
+      <div class="input-group-prepend ml-2">
+        <button class="btn btn-outline-secondary" type="button" id="more">More</button>
+      </div>
+    </div>
+    <div id="map" class="col-md-8 offset-md-2"></div>
+    <div class="modal" tabindex="-1" role="dialog" id="modal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="restaurant-name"></h5>
+          </div>
+          <div class="modal-body">
+            <p id="restaurant--info-vin"></p>
+            <p id="restaurant--info-rate"></p>
+            <p id="restaurant--info-open"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="document.getElementById('modal').style.display = 'none'">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9cdufBUYyJSNH4LThENamjkUmAKy0bIU&libraries=places&callback=initMap" async defer></script>
+    <script src="map.js" type="text/javascript" charset="utf-8" async defer></script>
+  </body>
+</html>
