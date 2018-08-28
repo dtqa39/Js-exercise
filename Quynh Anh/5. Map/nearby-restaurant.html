@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search Nearby Restaurant</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="nearby-restaurant-style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <style>
+
+      #map {
+        width: 800px;
+        height: 500px;
+        margin: auto;
+      }
+
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h3>Search Nearby Restaurant</h3>
+    <form action="">
+      <span class="form-group">
+        <select class="" id="distance" name="sellist1">
+          <option value="1">1 kilometer</option>
+          <option value="3">3 kilometers</option>
+          <option value="5">5 kilometers</option>
+          <option value="8">8  kilometers</option>
+          <option value="10">10  kilometers</option>
+        </select>
+        <button type="button" class="btn btn-primary btn-search">Search</button>
+        <button type="button" class="btn btn-primary btn-more">Show more</button>
+      </span>
+    </form>
+    <div id="map"></div>
+    <!-- The Modal -->
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" style="text-align: left;">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var map;
+        var markersArray = [];//use for pushing marker
+        function initMap(){
+            var options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+
+
+        //LOAD MAP SUCCESS
+            function success(pos) {
+            //get lat and lng of current position to create map
+                var crd = pos.coords;
+                var values = {lat: crd.latitude, lng: crd.longitude};
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: values,
+                    zoom: 15
+                });
+                var posMarker = new google.maps.Marker({position: values, map: map});// create marker for current position
+
+                var service = new google.maps.places.PlacesService(map);
+                // Next page
+                var getNextPage = null;
+                var moreButton = document.querySelector('.btn-more');
+                moreButton.onclick = function() {
+                    moreButton.disabled = true;
+                    if (getNextPage) getNextPage();
+                };
+            //get distance from select value then use function using distance as parameter
+                var r;
+                var select = document.getElementById("distance");
+                var btn = document.querySelector(".btn-search");
+
+            //define function to clear marker after evey click on search button
+                google.maps.Map.prototype.clearOverlays = function() {
+                    console.log(markersArray);
+                    for (var i = 0; i < markersArray.length; i++ ) {
+                        markersArray[i].setMap(null);
+                    }
+                }
+
+            // when click, invoke function that removes previous markers, draws new markers refer to distance
+                btn.onclick = handleSelectChange;
+                function handleSelectChange() {
+                    map.clearOverlays();//remove previous markers
+                    var value = select.value;
+                    r = value*1000;// radius = distance * 1000
+                    function draw(x){
+                        cityCircle = new google.maps.Circle({
+                            strokeColor: '#1474ce',
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: '#84e0ff',
+                            fillOpacity: 0.35,
+                            map: map,
+                            center: values,
+                            radius: x
+                        });
+                        service.nearbySearch({
+                            location: values,
+                            radius: x,// x will be r when function invoke
+                            type: ['restaurant']
+                        }, callback);
+                    }
+                    draw(r);
+
+                //use for loop, run function on every result from nearby search
+                    function callback(results, status, pagination) {
+                        if (status === google.maps.places.PlacesServiceStatus.OK) {
+                            for (var i = 0; i < results.length; i++) {
+                                createMarker(results[i]);
+                                moreButton.disabled = !pagination.hasNextPage;// next page took some second to display
+                                getNextPage = pagination.hasNextPage && function() {
+                                    pagination.nextPage();
+                                };
+                            }
+                        }
+                    }
+
+                //createMarker
+                    function createMarker(place) {
+                        var placeLoc = place.geometry.location;
+                        var flag = {
+                            url: "../images/flag.png",
+                            scaledSize: new google.maps.Size(30, 30)
+                        }
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: place.geometry.location,
+                            icon: flag
+                        });
+
+                        markersArray.push(marker);//push to array (global)
+                        markersArray.push(cityCircle);//push to array as well
+                        // When click, send request to get place detail
+                        google.maps.event.addListener(marker, 'click', function() {
+                            var request = {
+                                placeId: place.place_id,
+                                fields: ['name', 'rating', 'formatted_phone_number', 'formatted_address', 'photo']
+                            };
+                            service.getDetails(request, showMarker);
+                        //show detail marrker modal
+                            function showMarker(place, status) {
+                                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                                    $("#myModal").modal({show: true});
+                                    document.querySelector(".modal-title").innerHTML = place.name;
+                                    document.querySelector(".modal-body").innerHTML = "<b>Địa chỉ:  </b>" + place.formatted_address + "<br>"
+                                        + "<b>Rating: </b>" + place.rating + "/5"+ "<br>"+ "<b>Liên hệ: </b>" + place.formatted_phone_number;
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+
+
+        //Error
+            function error(err) {
+                console.warn(`ERROR(${err.code}): ${err.message}`);
+            }
+
+            navigator.geolocation.getCurrentPosition(success, error, options);
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9cdufBUYyJSNH4LThENamjkUmAKy0bIU&libraries=places&callback=initMap" async defer></script>
+  </body>
+</html>

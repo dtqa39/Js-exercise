@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Specific Date</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="specific-date-style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <form>
+        <h2>Enter your date</h2>
+        <p class="ex">(format YYYY-MM-DD, eg: 2018-06-14)</p>
+        <input type="text" id="date" class="form-control">
+        <p class="alert-mess"></p>
+        <button type="button" class="btn" id="submit-button">Show date</button>
+        <div class="content">
+            <hr>
+            <p>This will show your date in Vietnamese</p>
+            <p class="show-date"></p>
+        </div>
+    </form>
+</div>
+<script>
+    var btn = document.getElementById("submit-button");
+    btn.onclick = function () {
+        var showDate = document.querySelector(".show-date");
+        var dateInput = document.getElementById("date").value;
+        var dataDate = document.getElementById("date");
+        var alertMess = document.querySelector(".alert-mess");
+
+        //Check Regex
+        function isValidDate(dateString) {
+            var regEx = /^\d{4}-\d{2}-\d{2}$/;
+            return dateString.match(regEx) != null;
+        }
+
+        var d = new Date(dateInput);
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var date = d.getDate();
+        var dayNum = d.getDay();
+        var day;
+        console.log(year, month, date, dayNum);
+
+        if (isNaN(year) || isNaN(month) || isNaN(date) || isNaN(dayNum) || isValidDate(dateInput) === false) {
+            //if (isValidDate(dateInput) === false){
+            alertMess.innerHTML = "Your date is invalid!";
+            showDate.innerHTML = "";
+        }
+        else {
+            alertMess.innerHTML = "";
+            if (dayNum === 0) {
+                day = "Chủ Nhật";
+            }
+            if (dayNum === 1) {
+                day = "Thứ Hai";
+            }
+            if (dayNum === 2) {
+                day = "Thứ Ba";
+            }
+            if (dayNum === 3) {
+                day = "Thứ Tư";
+            }
+            if (dayNum === 4) {
+                day = "Thứ Năm";
+            }
+            if (dayNum === 5) {
+                day = "Thứ Sáu";
+            }
+            if (dayNum === 6) {
+                day = "Thứ Bảy";
+            }
+            showDate.innerHTML = day + " ngày " + date + " tháng " + month + " năm " + year;
+        }
+
+        dataDate.onkeyup = function () {
+            alertMess.innerHTML = "";
+        }
+    }
+</script>
+</body>
+</html>

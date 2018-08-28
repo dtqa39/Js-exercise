@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>User list</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="userlist-style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="content">
+  <button type="button" class="btn btn-primary">Show userlist</button>
+  <div class="back-drop"><img src="../images/ajax-loader.gif" alt="Loading" class="loading-img d-none"></div>
+  <table class="table table-bordered d-none">
+    <thead>
+      <tr>
+		<th>Stt</th>
+        <th>id</th>
+        <th>first_name</th>
+        <th>last_name</th>
+		<th>display_name</th>
+		<th>username</th>
+		<th>email</th>
+		<th>email_alt</th>
+		<th>is_chairman</th>
+		<th>is_admin</th>
+		<th>status</th>
+		<th>order</th>
+		<th>password</th>
+		<th>language_use_in_email</th>
+      </tr>
+    </thead>
+    <tbody class="tableBody">
+	
+    </tbody>
+  </table>
+  <ul class="pagination d-none">
+	<!-- <li class="page-item"><a href="#" class="page-link pre-page">&#8810;</a></li> -->
+  </ul>
+</div>
+<script>
+	var btn = document.querySelector(".btn");
+	btn.onclick = getUserlist;
+	
+	function getUserlist(){
+		var table = document.querySelector(".table");
+		var tbody = document.querySelector(".tableBody");
+		var loadingImg = document.querySelector(".loading-img");
+		loadingImg.classList.add("d-block");
+		var content = document.querySelector(".content");
+		content.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
+		var userlist;
+		var pag = document.querySelector(".pagination");
+		
+	//XHR get data
+		var request = new XMLHttpRequest();
+		request.open('GET', "https://training.gemvietnam.com/dummy-api/users.json");
+		request.responseType = 'text';
+
+		request.onload = function() {
+			userlist = JSON.parse(request.response);
+		//Pagination
+			var currentPage;
+			var itemPerPage = 10;
+			function numPage(){
+				return Math.ceil(userlist.length/itemPerPage);
+			}
+			//Pre
+			var pre = document.createElement("li");
+			pre.classList.add("page-item");
+			pag.appendChild(pre);
+			var preLink = document.createElement("a");
+			preLink.classList.add("page-link", "pre-page");
+			pre.appendChild(preLink);
+			preLink.innerHTML = "&#8810;";
+			
+			//Page Number
+			var pages = numPage();
+			for(var i = 0; i < pages; i++){
+				var pagItem = document.createElement("li");
+				pagItem.classList.add("page-item");
+				var pagItemLink = document.createElement("a");
+				pagItemLink.classList.add("page-link");
+				pagItem.appendChild(pagItemLink);
+				pag.appendChild(pagItem);
+				pagItemLink.innerHTML = i + 1;				
+			}
+			
+			//Next
+			var next = document.createElement("li");
+			next.classList.add("page-item");
+			pag.appendChild(next);
+			var nextLink = document.createElement("a");
+			nextLink.classList.add("page-link", "next-page");
+			next.appendChild(nextLink);
+			nextLink.innerHTML = "&#8811;";
+			
+			//Click pagination
+			document.addEventListener('click', function(e) {
+			e = e || window.event;
+			var target = e.target || e.srcElement,
+				text = target.textContent || text.innerText;
+				changePage(text);
+			}, false);
+			
+			
+			
+			//Change Page
+			function changePage(current){
+				var btnPre = document.querySelector(".btn-pre");
+				var btnNext = document.querySelector(".btn-next");
+				tbody.innerHTML = "";
+				
+				for(var i = (current-1)*itemPerPage; i < (current*itemPerPage); i++){
+						var user = userlist[i];
+						tr = document.createElement("tr");
+						tbody.appendChild(tr);
+						var stt = document.createElement("td");
+						tr.appendChild(stt);
+						stt.innerHTML = i+1;
+						for(var j in userlist[i]){
+							td = document.createElement("td");
+							td.innerHTML = userlist[i][j];
+							tr.appendChild(td);	
+						}
+					
+				}
+			}
+			changePage(1);
+		};
+		request.send();
+		
+	//Loading 3s and show
+		setTimeout(timeOut, 1000);
+		function timeOut(){
+			content.style.backgroundColor = "rgba(0, 0, 0, 0)";
+			btn.classList.add("d-none");
+			loadingImg.classList.remove("d-block");
+			table.classList.add("d-block");
+			pag.classList.remove("d-none");
+			
+		}	
+	}	
+	
+</script>
+</body>
+</html>
